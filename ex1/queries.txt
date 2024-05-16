@@ -1,0 +1,34 @@
+- db.contratos.find().count()
+- db.contratos.find({ tipoprocedimento: 'Ajuste Direto Regime Geral'}).count()
+- db.contratos.distinct('entidade_comunicante').sort()
+- db.contratos.aggregate([
+    {
+        $group: {
+            _id: "$tipoprocedimento",
+            count: { $sum: 1 }
+        }
+    },
+    {
+        $sort: {
+            count: -1
+        }
+    }
+]).forEach(function(doc) {
+    print("Tipo de Procedimento: " + doc._id + ", Contagem: " + doc.count);
+});
+- db.contratos.aggregate([
+    {
+        $group: {
+            _id: "$entidade_comunicante",
+            totalMontante: { $sum: { $toDouble: "$precoContratual" } }
+        }
+    },
+    {
+        $sort: {
+            totalMontante: -1
+        }
+    }
+]).forEach(function(doc) {
+    print("Entidade Comunicante: " + doc._id + ", Montante Total: " + doc.totalMontante);
+});
+
